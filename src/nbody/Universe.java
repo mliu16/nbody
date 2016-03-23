@@ -25,7 +25,8 @@ public class Universe {
 
     private final double radius;     // radius of universe
     private final int N;             // number of bodies
-    private final Body[] orbs;       // array of N bodies
+    private final Body[] orbs;       // array of N bodies   
+    private final Star[] stars = new Star[100];      // array of star
 
     // read universe from file
     public Universe(String fileName) {
@@ -51,12 +52,29 @@ public class Universe {
             double vy = inputStream.readDouble();
             double mass = inputStream.readDouble();
             double[] position = {rx, ry};
-            double[] velocity = {vx, vy};                       
+            double[] velocity = {vx, vy};
             Vector r = new Vector(position);
-            Vector v = new Vector(velocity);                       
+            Vector v = new Vector(velocity);
             orbs[i] = new Body(r, v, mass, 100);
-            
+
         } // for
+
+        // use a for loop to fill star array with stars at random positions
+        for (int i = 0; i < 100; i++) {
+            double x = Math.random() * radius;
+            if(Math.random() > 0.5){
+                x = -x;
+            } //if
+            double y = Math.random() * radius;
+            if(Math.random() > 0.5) {
+                y = -y;
+            } //if
+            
+            double r = 0.001 + Math.random() * 0.004;
+            Star star = new Star(x, y, r);
+            stars[i] = star;
+        } //for
+
     } // Universe()
 
     // increment time by dt units, assume forces are constant in given interval
@@ -88,7 +106,8 @@ public class Universe {
     public void draw() {
         for (int i = 0; i < N; i++) {
             orbs[i].draw();
-        } // for
+        } // for      
+
     } // draw()
 
     // client to simulate a universe
@@ -97,6 +116,11 @@ public class Universe {
         double dt = Double.parseDouble(args[0]);
         while (true) {
             StdDraw.clear(Color.BLACK);
+            
+            for (Star star : newton.stars) {
+                star.draw();
+            } //for
+            
             newton.increaseTime(dt);
             newton.draw();
             StdDraw.show(10);
