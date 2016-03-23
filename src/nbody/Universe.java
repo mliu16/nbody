@@ -51,11 +51,9 @@ public class Universe {
             double vy = inputStream.readDouble();
             double mass = inputStream.readDouble();
             double[] position = {rx, ry};
-            double[] velocity = {vx, vy};
-                       
+            double[] velocity = {vx, vy};                       
             Vector r = new Vector(position);
-            Vector v = new Vector(velocity);
-                       
+            Vector v = new Vector(velocity);                       
             orbs[i] = new Body(r, v, mass, 100);
             
         } // for
@@ -82,6 +80,7 @@ public class Universe {
         // move the bodies
         for (int i = 0; i < N; i++) {
             orbs[i].move(f[i], dt);
+            orbs[i].bouncing(radius);
         } // for
     } // increaseTime( double )
 

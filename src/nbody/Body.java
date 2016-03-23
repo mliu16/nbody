@@ -90,6 +90,24 @@ public class Body {
 
     } // draw()
 
+    public void bouncing(double boundary){
+        double x = r.cartesian(0);
+        double y = r.cartesian(1);
+        if (x >= boundary) {
+            v.xBackward();
+        } //if
+        if (x <= -boundary) {
+            v.xBackward();
+        } //if
+        if (y >= boundary) {
+            v.yBackward();
+        } //if
+        if (y <= -boundary) {
+            v.yBackward();
+        } //if    
+        
+    } //bouncing
+            
     // this method is only needed if you want to change the size of the bodies
     public void draw(double penRadius) {
         StdDraw.setPenRadius(penRadius);

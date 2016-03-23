@@ -78,6 +78,14 @@ public class Vector {
             sum = sum + (this.data[i] * that.data[i]);
         return sum;
     } // dot( Vector )
+    
+    public void xBackward() {
+        data[0] = data[0] * -0.9;
+    } // xBackward
+    
+    public void yBackward() {
+        data[1] = data[1] * -0.9;
+    } // yBackward
 
     // return the Euclidean norm of this Vector
     public double magnitude() {
