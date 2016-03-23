@@ -8,7 +8,6 @@ public class Star {
     private final double x;
     private final double y;
     private final double r;
-    
 
     public Star(double x, double y, double r) {
         this.x = x;
@@ -16,12 +15,13 @@ public class Star {
         this.r = r;
     } //Stars
 
-    public void draw() {       
-            
-            StdDraw.setPenColor(Color.WHITE);
-            StdDraw.setPenRadius(r);
-            StdDraw.point(x, y);
-            
+    public void draw() {
+        int a = (int) (65 + Math.random()*190);
+        Color color = new Color(a, a, a);
+        StdDraw.setPenColor(color);
+        StdDraw.setPenRadius(r);
+        StdDraw.point(x, y);
+
     } // draw()   
 
 } // Stars
