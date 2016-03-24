@@ -2,6 +2,7 @@ package nbody;
 
 import edu.princeton.cs.StdDraw;
 import java.awt.Color;
+import java.util.LinkedList;
 
 /**
  * ****************************************************************************
@@ -18,17 +19,20 @@ public class Body {
     private Vector r;      // position
     private Vector v;      // velocity
     private final double mass;   // mass
-    private final double[][] capturenew; // capture coordinates
+    private final int capture;
+    private final LinkedList<Vector> pastPositions;
 
+    //Constructor
     public Body(Vector r, Vector v, double mass, int capture) {
         this.r = r;
         this.v = v;
         this.mass = mass;
-
-        this.capturenew = new double[capture][2];
-
+        //this.capturenew = new double[capture][2];
+        this.capture = capture;
+        this.pastPositions = new LinkedList<>();
     } // Body( Vector, Vector, double )
 
+    //make bodies move and tails follow
     public void move(Vector f, double dt) {
         Vector a = f.times(1 / mass);
         v = v.plus(a.times(dt));
@@ -37,26 +41,23 @@ public class Body {
 
     } // move( Vector, double )
 
-    public void update(Vector r) {
-        if (capturenew[capturenew.length - 1][0] == 0) {
-            for (int i = 0; i < capturenew.length; i++) {
-                if (this.capturenew[i][0] == 0) {
-                    this.capturenew[i][0] = r.cartesian(0);
-                    this.capturenew[i][1] = r.cartesian(1);
-                    break;
-                }
+    //Update for adding tails
+    private void update(Vector r) {
+        // Fill pastPositions if empty
+        if (pastPositions.isEmpty()) {
+            for (int i = 0; i < this.capture; i++) {
+                pastPositions.add(r);
             }
         }
-
-        for (int i = 0; i < capturenew.length - 1; i++) {
-            capturenew[i][0] = capturenew[i + 1][0];
-            capturenew[i][1] = capturenew[i + 1][1];
+        // Insert new position, then remove oldest one
+        pastPositions.add(0, r);
+        if (pastPositions.size() > this.capture) {
+            pastPositions.removeLast();
         }
-        capturenew[capturenew.length - 1][0] = r.cartesian(0);
-        capturenew[capturenew.length - 1][1] = r.cartesian(1);
 
     } // update()
 
+    //Fore based on gravity
     public Vector forceFrom(Body b) {
         Body a = this;
         double G = 6.67e-11;
@@ -66,8 +67,8 @@ public class Body {
         return delta.direction().times(F);
     } // forceFrom( Body )
 
+    //Draw bodies
     public void draw() {
-//        StdDraw.clear(Color.GRAY);
         StdDraw.setPenRadius(0.025);
         int red = (int) Math.round(Math.random() * 255);
         int green = (int) Math.round(Math.random() * 255);
@@ -75,22 +76,20 @@ public class Body {
         Color color = new Color(red, green, blue);
         StdDraw.setPenColor(color);
         StdDraw.point(r.cartesian(0), r.cartesian(1));
-        StdDraw.setPenColor(Color.WHITE);
-        for (int i = 0; i < 200; i++) {
-            double x0 = Math.random() * 2 - 2;
-            double y0 = Math.random() * 2 - 2;
-            double r0 = Math.random();
-            StdDraw.point(x0, y0);
-        } // for
-        StdDraw.setPenRadius(.001);
+        StdDraw.setPenRadius(.002);
 
-        for (int i = 0; i < capturenew.length - 1; i++) {
-            StdDraw.line(capturenew[i][0], capturenew[i][1], capturenew[i + 1][0], capturenew[i + 1][1]);
-        }
+        //Draw tails
+        for (int i = 0; i < pastPositions.size() - 1; i++) {
+            Vector p1 = pastPositions.get(i);
+            Vector p2 = pastPositions.get(i + 1);
+            StdDraw.setPenRadius(0.02 * (this.capture - i)/this.capture);
+            StdDraw.line(p1.cartesian(0), p1.cartesian(1), p2.cartesian(0), p2.cartesian(1));
+        } //for
 
     } // draw()
 
-    public void bouncing(double boundary){
+    //Change move direction by calling x and y Backward methods in Vector
+    public void bouncing(double boundary) {
         double x = r.cartesian(0);
         double y = r.cartesian(1);
         if (x >= boundary) {
@@ -104,14 +103,6 @@ public class Body {
         } //if
         if (y <= -boundary) {
             v.yBackward();
-        } //if    
-        
+        } //if 
     } //bouncing
-            
-    // this method is only needed if you want to change the size of the bodies
-    public void draw(double penRadius) {
-        StdDraw.setPenRadius(penRadius);
-        StdDraw.point(r.cartesian(0), r.cartesian(1));
-    } // draw( double )
-
 } // Body
