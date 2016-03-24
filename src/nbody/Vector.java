@@ -27,7 +27,7 @@ package nbody;
 
 public class Vector { 
 
-    private final int N;         // length of the vector
+    final int N;         // length of the vector
     private final double[] data;       // array of vector's components
 
     // create the zero vector of length N
@@ -79,12 +79,14 @@ public class Vector {
         return sum;
     } // dot( Vector )
     
+    //Set up new location of x
     public void xBackward() {
-        data[0] = data[0] * -0.9;
+        this.data[0] = this.data[0] * -0.9;
     } // xBackward
     
+    //Set up new location of y
     public void yBackward() {
-        data[1] = data[1] * -0.9;
+       this.data[1] = this.data[1] * -0.9;
     } // yBackward
 
     // return the Euclidean norm of this Vector
