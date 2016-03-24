@@ -3,6 +3,8 @@ package nbody;
 import edu.princeton.cs.In;
 import edu.princeton.cs.StdDraw;
 import java.awt.Color;
+import java.awt.Font;
+import java.util.Formatter;
 
 /**
  * ****************************************************************************
@@ -45,9 +47,9 @@ public class Universe {
 
         // read in the N bodies
         orbs = new Body[N];
-        for (int i = 0; i < N; i++) {
-            double rx = inputStream.readDouble();
-            double ry = inputStream.readDouble();
+        for (int i = 0; i < N; i++) {          
+            double rx = inputStream.readDouble()*Math.random();
+            double ry = inputStream.readDouble()*Math.random();
             double vx = inputStream.readDouble();
             double vy = inputStream.readDouble();
             double mass = inputStream.readDouble();
@@ -55,7 +57,7 @@ public class Universe {
             double[] velocity = {vx, vy};
             Vector r = new Vector(position);
             Vector v = new Vector(velocity);
-            orbs[i] = new Body(r, v, mass, 100);
+            orbs[i] = new Body(r, v, mass, 100);           
 
         } // for
 
@@ -124,6 +126,8 @@ public class Universe {
             newton.increaseTime(dt);
             newton.draw();
             StdDraw.show(10);
+             // Display the ball's information            
+     
         } // while
     } // main( String [] )
 } // Universe
